@@ -15,7 +15,7 @@ int main(){
 
     m.display();
 
-    m.get_element(0,1).afficher();
+    cout << m.get_element(0,1);
 
     cout << endl <<  endl;
 

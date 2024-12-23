@@ -1,5 +1,5 @@
-programme: complexe.cpp qubit.cpp matrice.cpp main.cpp
-	g++ -Wall -std=c++17 -o programme complexe.cpp qubit.cpp matrice.cpp main.cpp \
+programme: qubit.cpp matrice.cpp main.cpp
+	g++ -Wall -std=c++17 -o programme qubit.cpp matrice.cpp main.cpp \
 	-I/opt/anaconda3/envs/Projet_C++/include/python3.13 \
 	-L/opt/anaconda3/envs/Projet_C++/lib -lpython3.13
 	install_name_tool -add_rpath /opt/anaconda3/envs/Projet_C++/lib ./programme

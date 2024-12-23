@@ -59,7 +59,7 @@ void complexe::initialiser(double x , double y){
 }
 
 void complexe::afficher(){ 
-    std::cout << part_reelle << " + " << "i(" << part_imaginaire << ')' << std::endl;
+    std::cout << part_reelle << " + " << "i(" << part_imaginaire << ')' ;//<< std::endl;
 }
 
 double complexe::get_norm(){

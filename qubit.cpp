@@ -2,6 +2,7 @@
 #include<cmath>
 #include"qubit.h"
 #include"complexe.h"
+#include"surcharge_complexe.h"
 
 qubit::qubit(complexe alpha_ , complexe beta_) : alpha(alpha_) , beta(beta_){}
 
@@ -40,4 +41,9 @@ double qubit::get_abs_beta() {
 
 void qubit::display(){
     alpha.afficher(); beta.afficher();
+}
+
+void qubit::transform(matrice m){
+    alpha = m.get_element(0,0)*alpha + m.get_element(0,1)*beta;
+    beta = m.get_element(1,0)*alpha + m.get_element(1,1)*beta;
 }

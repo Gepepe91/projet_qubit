@@ -1,3 +1,5 @@
+/*
+
 #include<iostream>
 #include<cmath>
 //#include<Python.h>
@@ -32,3 +34,5 @@ int main(){
     
 return 0;
 }
+
+*/

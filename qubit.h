@@ -2,6 +2,7 @@
 #define QUBIT_H
 
 #include"complexe.h"
+#include"matrice.h"
 
 class qubit
 
@@ -47,6 +48,8 @@ void set_alpha(complexe alpha_);
 void set_beta(complexe beta_);
 
 void display();
+
+void transform(matrice m);
 
 
  };

@@ -1,8 +1,0 @@
-- création de la classe qubit , réutilisation de la classe complexe ainsi que les surcharges d'opérateurs
-
-- la classe qubit possèdent deux attributs privés : alpha, beta, theta et phi
-deux méthodes de synchronisation entre ces deux couples d'attributs
-
-- la classe qubit ne possède pas de constructeur par défaut : un qubit s'initialise avec alpha et beta
-
-- la classe qubit possède une méthode .display() très simple qui affiche alpha et beta

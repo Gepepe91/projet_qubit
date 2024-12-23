@@ -15,7 +15,6 @@ Il est donc possible de s'inspirer très fortement du cours
 D'ailleurs, c'est plus une classe d'isomorphisme qu'une classe de matrice : que des matrices 2x2 !
 */
 
-#include"complexe.h"
 #include<complex>
 #include<vector>
 #include<iostream>
@@ -25,17 +24,17 @@ class matrice{
 
     private:
 
-    std::vector<std::vector<complexe>> mat; // la matrice de Pauli y a des coef complexes
+    std::vector<std::vector<std::complex<double>>> mat; // la matrice de Pauli y a des coef complexes
 
     public:
 
     matrice(); // le constructeur par défaut doit donner l'identité 2x2;
-    matrice(complexe a , complexe b , complexe c , complexe d);
+    matrice(std::complex<double> a , std::complex<double> b , std::complex<double> c , std::complex<double> d);
     // a c
     // b d
 
     void display();
-    complexe get_element(unsigned int ligne , unsigned int colonne) const;
+    std::complex<double> get_element(unsigned int ligne , unsigned int colonne) const;
 
     void set_as_Pauli_x();
     void set_as_Pauli_y();

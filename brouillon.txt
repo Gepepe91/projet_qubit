@@ -8,10 +8,8 @@ L’objectif est de simuler comment l'état du qubit évolue dans le temps lorsq
 Quels sont les objets à créer ?
 - qubit
 - vecteur et matrice --> class vector suffisante ?
-Perso je pencherais pour créer une bonne fois pour toutes nos vecteurs et matrices, car vector est relativement lourd
 - champ magnétique ?
 
 Milestones :
 - retrouver Runge Keita
-- visualiser sphère de Bloch en appelant matplotlib
 - créer des animations montrant l'évolution des qubits au cours du temps dans la sphère de Bloch

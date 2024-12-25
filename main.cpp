@@ -5,11 +5,12 @@
 #include"qubit.h"
 #include"matrice.h"
 
+using complexe = std::complex<double>;
 using namespace std;
 
 int main(){
 
-    complex<double> a(4.,4) , b(0,0) , c(-5,5) , d(1,1);
+    complexe a(4.,4) , b(0,0) , c(-5,5) , d(1,1);
 
     matrice m(a , b , c , d);
 

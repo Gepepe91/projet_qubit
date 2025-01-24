@@ -52,3 +52,23 @@ void qubit::transform(matrice m){
     alpha = m.get_element(0,0)*alpha + m.get_element(0,1)*beta;
     beta = m.get_element(1,0)*alpha + m.get_element(1,1)*beta;
 }
+
+void qubit::normalize() {
+    double norm = std::sqrt(std::norm(alpha) + std::norm(beta));
+    alpha /= norm;
+    beta /= norm;
+}
+
+// Surcharge de l'opérateur * pour multiplier par un scalaire complexe
+qubit qubit::operator*(const std::complex<double>& scalaire) {
+    // Multiplie chaque composant par le scalaire
+    return qubit(alpha * scalaire, beta * scalaire);
+}
+// Surcharge de l'opérateur * pour multiplier par un scalaire complexe
+qubit qubit::operator*(const double& scalaire){
+    return qubit(alpha * scalaire , beta * scalaire);
+}
+//Surcharge de l'opérateur + entre qubit
+qubit qubit:: operator+(const qubit& r){
+    return qubit(alpha + r.alpha , beta + r.beta);
+}

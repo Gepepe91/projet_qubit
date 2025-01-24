@@ -39,6 +39,10 @@ public:
 qubit(); //constructeur par défaut
 qubit (std::complex<double> alpha_ , std::complex<double> beta_);
 
+qubit operator*(const std::complex<double>& scalaire);
+qubit operator*(const double& scalaire);
+qubit operator+(const qubit& r);
+
 std::complex<double> get_alpha() ;
 std::complex<double> get_beta() ;
 double get_abs_alpha() ;
@@ -50,6 +54,8 @@ void set_beta(std::complex<double> beta_);
 void display();
 
 void transform(matrice m);
+
+void normalize();
 
 
  };

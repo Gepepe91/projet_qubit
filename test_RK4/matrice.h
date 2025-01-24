@@ -24,7 +24,7 @@ class matrice{
 
     private:
 
-    std::vector<std::vector<std::complex<double>>> mat; // la matrice de Pauli y a des coef complexes
+    std::vector<std::vector<std::complex<double>>> mat; // la matrice de Pauli a des coef complexes
 
     public:
 

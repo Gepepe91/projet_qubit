@@ -6,76 +6,59 @@
 #include "matrice.h"
 
 double DT=0.01;   // Pas de temps
-double T_MAX=10;  // Temps maximal de la simulation
+double T_MAX=30;  // Temps maximal de la simulation
 
 using complexe = std::complex<double>;
 using namespace std;
 
-// Fonction pour calculer f(t, psi) = -i * H * psi
-void compute_derivative(qubit q, matrice H, qubit dpsi) {
+// Fonction pour calculer f(t, psi) = -i * H * psi , ici correspond à la dérivée (éq de schrödinger)
+// cette fonction revoie un nouveau qubit !
+qubit compute_derivative(qubit q, matrice H) {
     // Appliquer la matrice H au qubit
-    q.transform(H);
-
-    // Calculer la dérivée de l'état en utilisant l'hamiltonien (multiplication par -i)
-    complexe dpsi_alpha(-q.get_alpha().imag() , q.get_alpha().real()) ; // -i * alpha
-    complexe dpsi_beta(-q.get_beta().imag() , q.get_beta().real()) ; // -i *beta
-    dpsi.set_alpha(dpsi_alpha) ; dpsi.set_beta(dpsi_beta);
-    //qubit dpsi(dpsi_alpha , dpsi_beta); //construction de dpsi
+    qubit new_q = q;
+    new_q.transform(H);
+    // Calculer la dérivée de l'état en utilisant l'hamiltonien (multiplication par -i/hbar)
+    complexe temp_alpha(-new_q.get_alpha().imag() , new_q.get_alpha().real()) ; // -i * alpha
+    complexe temp_beta(-new_q.get_beta().imag() , new_q.get_beta().real()) ; // -i *beta
+    new_q.set_alpha(temp_alpha);
+    new_q.set_beta(temp_beta);
+    return new_q;
 }
 
 // Implémentation de la méthode Runge-Kutta de 4e ordre
-void runge_kutta4(qubit &q, matrice H, double dt) {
+void rk4(qubit& q, matrice H, double dt) {
     
     complexe a , b ; //le constructeur des complexes par défaut donne 0 + Oi
 
+    //initialisation à alpha = 0 , beta = 0 des ki de RK4
     qubit k1(a , b);
     qubit k2(a , b);
-    qubit k3(a , b); //initialisation à alpha = 0 , beta = 0
+    qubit k3(a , b);
     qubit k4(a , b);
 
     // k1
-    compute_derivative(q, H, k1);
-
+    k1 = compute_derivative(q, H);
     // k2
-    complexe k2_q_temp_alpha(q.get_alpha().real() + 0.5 * dt * k1.get_alpha().real() , q.get_alpha().imag() + 0.5 * dt * k1.get_alpha().imag());
-    complexe k2_q_temp_beta(q.get_beta().real() + 0.5 * dt * k1.get_beta().real() , q.get_beta().imag() + 0.5 * dt * k1.get_beta().imag());
-    
-    qubit k2_q_temp(k2_q_temp_alpha , k2_q_temp_beta);
-
-    compute_derivative(k2_q_temp, H, k2);
-
+    k2 = compute_derivative(q + k1*(0.5*dt), H);
     // k3
-    complexe k3_q_temp_alpha(q.get_alpha().real() + 0.5 * dt * k1.get_alpha().real() , q.get_alpha().imag() + 0.5 * dt * k1.get_alpha().imag());
-    complexe k3_q_temp_beta(q.get_beta().real() + 0.5 * dt * k1.get_beta().real() , q.get_beta().imag() + 0.5 * dt * k1.get_beta().imag());
-    
-    qubit k3_q_temp(k3_q_temp_alpha , k3_q_temp_beta);
-
-    compute_derivative(k3_q_temp , H , k3);
-
+    k3 = compute_derivative(q + k2*(0.5*dt) , H);
     // k4
-    complexe k4_q_temp_alpha(q.get_alpha().real() + 0.5 * dt * k1.get_alpha().real() , q.get_alpha().imag() + 0.5 * dt * k1.get_alpha().imag());
-    complexe k4_q_temp_beta(q.get_beta().real() + 0.5 * dt * k1.get_beta().real() , q.get_beta().imag() + 0.5 * dt * k1.get_beta().imag());
-    
-    qubit k4_q_temp(k4_q_temp_alpha , k4_q_temp_beta);
+    k4 = compute_derivative(q + k3*dt , H);
 
-    compute_derivative(k4_q_temp , H , k4);
-
-    // Mise à jour de l'état du qubit q
-    complexe q_alpha(q.get_alpha().real() + (dt / 6.0) * (k1.get_alpha().real() + 2.0 * k2.get_alpha().real() + 2.0 * k3.get_alpha().real() + k4.get_alpha().real()),
-                     q.get_alpha().imag() + (dt / 6.0) * (k1.get_alpha().imag() + 2.0 * k2.get_alpha().imag() + 2.0 * k3.get_alpha().imag() + k4.get_alpha().imag()));
-    complexe q_beta(q.get_beta().real() + (dt / 6.0) * (k1.get_beta().real() + 2.0 * k2.get_beta().real() + 2.0 * k3.get_beta().real() + k4.get_beta().real()),
-                     q.get_beta().imag() + (dt / 6.0) * (k1.get_beta().imag() + 2.0 * k2.get_beta().imag() + 2.0 * k3.get_beta().imag() + k4.get_beta().imag()));
-    q = qubit(q_alpha,q_beta);
+    // Mise à jour de l'état du qubit
+    q = q + (k1 + k2*2 + k3*2 + k4) * (dt/6); // l'ordre est un peu chiant, difficulté de la surcharge en C++
 
 }
 
 int main() {
     // Hamiltonien de précession de phase (sans perturbation)
     double omega_0 = 1.0;
-    matrice H(omega_0/2. , 0. , 0. , -omega_0 /2.);
+    matrice H(omega_0/2. , 0 , 0. , -omega_0/2.);
+
+    H.display();
 
     // Initialisation de l'état |psi(0)> = |0>
-    complexe alpha0(1,0) , beta0(0,0);
+    complexe alpha0(1,0) , beta0(1,0);
     qubit q(alpha0 , beta0);
 
     //Ouverture du fichier
@@ -83,11 +66,11 @@ int main() {
     fichier.open("data.csv");
 
     // Simulation
-    fichier << "Time\tRe(psi0)\tIm(psi0)\tRe(psi1)\tIm(psi1)" << endl;
+    fichier << "Time\talpha\tbeta" << endl;//Re(alpha)\tIm(alpha)\tRe(beta)\tIm(beta)" << endl;
     for (double t = 0; t <= T_MAX; t += DT) {
-        fichier << t << "\t" << q.get_alpha().real() << "\t" << q.get_alpha().imag() << "\t"
-                  << q.get_beta().real() << "\t" << q.get_beta().imag() << std::endl;
-        runge_kutta4(q, H, DT); // Mise à jour de |psi> avec RK4
+        fichier << t << "\t" << q.get_alpha() << "\t" << q.get_beta() << endl;// << "\t" << q.get_alpha().real() << "\t" << q.get_alpha().imag() << "\t"
+                  //<< q.get_beta().real() << "\t" << q.get_beta().imag() << std::endl;
+        rk4(q, H, DT); // Mise à jour de |psi> = notre qubit avec RK4
     }
 
     //Fermeture du fichier

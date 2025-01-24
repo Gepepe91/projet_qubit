@@ -16,6 +16,8 @@ int main(){
 
     m.display();
 
+    cout << endl;
+
     cout << m.get_element(0,1);
 
     cout << endl <<  endl;

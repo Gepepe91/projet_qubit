@@ -45,6 +45,8 @@ qubit operator+(const qubit& r);
 
 std::complex<double> get_alpha() ;
 std::complex<double> get_beta() ;
+double get_theta();
+double get_phi();
 double get_abs_alpha() ;
 double get_abs_beta() ;
 

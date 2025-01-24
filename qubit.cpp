@@ -16,6 +16,8 @@ void qubit::synchr_alpha_beta_to_theta_phi(){
     phi = arg(beta) - arg(alpha);
 }
 void qubit::synchr_theta_phi_to_alpha_beta(){
+    alpha = cos(theta/2);
+    beta = exp(complex(0,phi)) * sin(theta/2);
 }
 
 void qubit::set_alpha(complex alpha_){
@@ -36,6 +38,15 @@ complex qubit::get_beta() {
     return beta;
 }
 
+double qubit::get_theta() {
+    synchr_alpha_beta_to_theta_phi();
+    return theta;
+}
+double qubit::get_phi() {
+    synchr_alpha_beta_to_theta_phi();
+    return phi;
+}
+
 double qubit::get_abs_alpha() {
     return alpha.real();
 }
@@ -54,9 +65,9 @@ void qubit::transform(matrice m){
 }
 
 void qubit::normalize() {
-    double norm = std::sqrt(std::norm(alpha) + std::norm(beta));
-    alpha /= norm;
-    beta /= norm;
+    double constante_norm = std::sqrt(std::norm(alpha) + std::norm(beta));
+    alpha /= constante_norm;
+    beta /= constante_norm;
 }
 
 // Surcharge de l'opérateur * pour multiplier par un scalaire complexe

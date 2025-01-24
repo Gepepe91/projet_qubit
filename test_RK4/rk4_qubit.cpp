@@ -26,7 +26,7 @@ qubit compute_derivative(qubit q, matrice H) {
 }
 
 // Implémentation de la méthode Runge-Kutta de 4e ordre
-void rk4(qubit& q, matrice H, double dt) {
+    void rk4(qubit& q, matrice H, double dt) {
     
     complexe a , b ; //le constructeur des complexes par défaut donne 0 + Oi
 
@@ -71,6 +71,7 @@ int main() {
         fichier << t << "\t" << q.get_alpha() << "\t" << q.get_beta() << endl;// << "\t" << q.get_alpha().real() << "\t" << q.get_alpha().imag() << "\t"
                   //<< q.get_beta().real() << "\t" << q.get_beta().imag() << std::endl;
         rk4(q, H, DT); // Mise à jour de |psi> = notre qubit avec RK4
+        q.normalize(); // renormalisation, sinon le qubit se dénormalise au cours du temps (erreur numérique)
     }
 
     //Fermeture du fichier

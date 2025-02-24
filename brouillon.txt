@@ -1,15 +1,9 @@
-OBjectif
-L’objectif est de simuler comment l'état du qubit évolue dans le temps lorsqu'il est soumis à un champ magnétique externe. Cela implique de :
-- Modéliser la précession de spin (le comportement d’un spin sous un champ constant).
-- Simuler des oscillations de Rabi en appliquant un champ oscillant.
-- Visualiser l'évolution de l'état du qubit sur la sphère de Bloch.
+Nouveaux objectifs :
 
+Définir de façon assez général le champ
+    --> est-il toujours selon z ?
+    --> simple scalaire ou vector<double> ?
+    --> comment le définir comme étant variable au cours du temps ?
+        --> possiblement créer une clase champ_B, puis deux classes filles B_statique et B_dynamique
 
-Quels sont les objets à créer ?
-- qubit
-- vecteur et matrice --> class vector suffisante ?
-- champ magnétique ?
-
-Milestones :
-- retrouver Runge Keita
-- créer des animations montrant l'évolution des qubits au cours du temps dans la sphère de Bloch
+Putain il est trop fort Florian...

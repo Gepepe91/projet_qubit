@@ -48,12 +48,13 @@ double qubit::get_phi() {
 }
 
 double qubit::get_abs_alpha() {
-    return alpha.real();
+    return abs(alpha);
 }
 
 double qubit::get_abs_beta() {
-    return beta.imag();
+    return abs(beta);
 }
+
 
 void qubit::display(){
     std::cout << alpha; std::cout << beta;

@@ -47,8 +47,8 @@ std::complex<double> get_alpha() ;
 std::complex<double> get_beta() ;
 double get_theta();
 double get_phi();
-double get_abs_alpha() ;
-double get_abs_beta() ;
+double get_abs_alpha();
+double get_abs_beta();
 
 void set_alpha(std::complex<double> alpha_);
 void set_beta(std::complex<double> beta_);

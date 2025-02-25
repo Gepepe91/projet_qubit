@@ -45,6 +45,6 @@ void Evolve::runSimulation(const Qubit& qubit, double delta_t, double T_total, d
         getCoordinates(evolvingQubit, x, y, z);
 
         // Écrire les résultats
-    outFile << t << "," << evolvingQubit.prob_psi0() << "," << evolvingQubit.prob_psi1() << "," << x << "," << y << "," << z << "\n";
+    outFile << t << "," << evolvingQubit.prob_psi0() << "," << evolvingQubit.prob_psi1() << "," << x << "," << y << "," << z << ',' << acos(z/(sqrt(x*x+y*y+z*z))) <<"\n";
     }
 }

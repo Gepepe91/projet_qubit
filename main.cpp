@@ -46,13 +46,13 @@ int main(){
 
     // définition des grandeurs physiques :
 
-    double gamma = -8.794e10 , B_z = 0.01 ; //rapport gyromagnétique de l'électron en C.kg^-1 , champ B0 de 10 mT
+    double gamma = -8.794e10 , B_z = 0.1 ; //rapport gyromagnétique de l'électron en C.kg^-1 , champ B0 de 10 mT
     double omega_0 = - gamma * B_z ; //fréquence de Larmor
 
     // grandeurs de la simulation :
 
     double T_0 = (2*M_PI)/omega_0;
-    double dt = T_0 / 10; //incrément de temps arbitraire comme étant une fraction de la période
+    double dt = T_0 / 1000; //incrément de temps arbitraire comme étant une fraction de la période
     double T_max = 10*T_0; // arbitraire aussi, temps maximale de la simulation
 
     // Hamiltonien de précession de phase
@@ -60,17 +60,20 @@ int main(){
     matrice H(omega_0/2. , 0 , 0. , -omega_0/2.);
 
     // Initialisation de notre qubit , état initial
-    complexe alpha0(sqrt(2),sqrt(2)) , beta0(sqrt(2),sqrt(2));
-    qubit q(alpha0 , beta0);
+    //complexe alpha0(1/sqrt(2),1/sqrt(2)) , beta0(0,0);
+    //qubit q(alpha0 , beta0);
+    //Il est plus simple d'initialiser avec theta et phi :
+
+    qubit q(M_PI/4,M_PI/4); //initialisation de notre qubit avec des coordonnées angulaires theta et phi, réelles
 
     //Ouverture du fichier
     ofstream fichier;
     fichier.open("data.csv");
 
     // Simulation
-    fichier << "Time,theta,phi,abs_alpha,abs_beta" << endl;
+    fichier << "Time theta phi abs_alpha2 abs_beta2" << endl;
     for (double t = 0; t <= T_max; t += dt) {
-        fichier << t  << "," << q.get_theta() << "," << q.get_phi() << "," << q.get_abs_alpha() << "," << q.get_abs_beta() << endl;
+        fichier << t  << " " << q.get_theta() << " " << q.get_phi() << " " << q.get_abs_alpha2() << " " << q.get_abs_beta2() << endl;
         rk4(q, H, dt); // Mise à jour de |psi> = notre qubit avec RK4
         q.normalize(); // renormalisation, sinon le qubit se dénormalise au cours du temps (erreur numérique)
     }

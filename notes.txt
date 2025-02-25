@@ -1,0 +1,26 @@
+Un qubit préparé avec un champ Ox et Oz --> on est certain de l'état du q lorsqu'on arrête notre champ à un instant t donnée.
+(oscillations de Rabi)
+Le champ permet de maitriser l'état de notre qubit.
+
+On applique un opérateur à notre quantique,
+1 0
+0 exp(i \epsilon)
+, on ne connaît pas epsilon
+
+Ici, notre opérateur n'agit que sur |1> --> déphasage
+On obtient |\Psi '> = alpha|0> + beta*exp(i \epsilon)|1>, déphasage sur le vecteur |1>.
+
+En plus de ça, notre état se prend du bruit dans la gueule sous la forme d'un opérateur non diagonal.
+
+La mesure quantique est réalisée sur cet état déphasé et bruité.
+
+Le but de notre étude est de remonté à la valeur de \epsilon à partir de notre état bruité.
+
+
+Problématique de métrologie : on peut mesurer epsilon malgré le bruit, et d'autant mieux lorsque on a par exemple
+plusieurs qubits entre eux.
+
+
+
+
+Concrètement, on applique U_epsilon pour le déphasage sur |1>.

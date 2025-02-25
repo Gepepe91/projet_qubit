@@ -8,7 +8,7 @@ class qubit
 
 /*
 un qubit peut se modéliser de cette façon :
-|psy(t)> = alpha|0> + beta|1> , alpha et beta std::complex<double>s --> utilisation de la classe std::complex<double>s créé en TD
+|psy(t)> = alpha|0> + beta|1> , alpha et beta std::complex<double>
 
 avec |alpha|**2 + |beta|**2 = 1
 
@@ -28,6 +28,7 @@ il y a aussi deux autres attributs utiles pour la représentation selon la sphè
 
 private:
 
+// notre qubit est entièrement caractérisé à un instant donné par un couple de nombres
 std::complex<double> alpha , beta;
 double theta , phi;
 
@@ -37,7 +38,8 @@ void synchr_theta_phi_to_alpha_beta();
 public:
 
 qubit(); //constructeur par défaut
-qubit (std::complex<double> alpha_ , std::complex<double> beta_);
+qubit (std::complex<double> alpha_ , std::complex<double> beta_); //constructeur via alpha et beta
+qubit (double theta_ , double phi_); //constructeur via theta et phi
 
 qubit operator*(const std::complex<double>& scalaire);
 qubit operator*(const double& scalaire);
@@ -47,8 +49,8 @@ std::complex<double> get_alpha() ;
 std::complex<double> get_beta() ;
 double get_theta();
 double get_phi();
-double get_abs_alpha();
-double get_abs_beta();
+double get_abs_alpha2();
+double get_abs_beta2();
 
 void set_alpha(std::complex<double> alpha_);
 void set_beta(std::complex<double> beta_);

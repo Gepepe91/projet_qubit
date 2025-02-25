@@ -1,7 +1,7 @@
 #ifndef QUBIT_H
 #define QUBIT_H
 
-#include <complex> //utilisation de la classe complex<double> de std
+#include <complex> //utilisation de la classe complex<double> de la bibliothèque standard
 #include"matrice.h"
 
 class qubit

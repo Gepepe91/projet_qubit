@@ -71,6 +71,13 @@
         "iterator": "cpp",
         "memory_resource": "cpp",
         "utility": "cpp",
-        "text_encoding": "cpp"
+        "text_encoding": "cpp",
+        "random": "cpp",
+        "codecvt": "cpp",
+        "deque": "cpp",
+        "fstream": "cpp",
+        "iomanip": "cpp",
+        "stack": "cpp",
+        "__string": "cpp"
     }
 }

@@ -126,6 +126,7 @@ matrice qubit::operator&(const qubit& q2){
     return matrice (alpha * conj(q2.alpha) , alpha * conj(q2.beta) , beta * conj(q2.alpha) , beta * conj(q2.beta));
 }
 
-matrice qubit::operator^(const qubit& q2){
-    return matrice (alpha * q2.alpha , alpha*q2.beta , beta*q2.alpha , beta*q2.beta);
-}
+//matrice qubit::operator^(const qubit& q2){
+//    return matrice (alpha * q2.alpha , alpha*q2.beta , beta*q2.alpha , beta*q2.beta);
+//}
+// ! A redéfinir, il faut obtenir une matrice 4*1

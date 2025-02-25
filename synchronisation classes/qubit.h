@@ -66,7 +66,7 @@ public:
     std::complex<double> operator|(const qubit& q2); //calcul <Psi1 | Psi2>, retourne un complexe
     matrice operator&(const qubit& q2); // mutiplication |Psi1> <Psi2|, retourne une matrice complexe
 
-    matrice operator^(const qubit& q2);
+    //matrice operator^(const qubit& q2);
 
 };
 

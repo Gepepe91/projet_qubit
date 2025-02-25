@@ -50,7 +50,11 @@ class matrice{
     //Surcharge opérateurs
 
     matrice operator*(const complex z); // matrice * complexe
-    qubit operator*(const qubit q);     // matrice * qubit
+    qubit operator*( qubit q);     // matrice * qubit
+    matrice operator+(const complex z);
+    matrice operator+(const matrice n);
+
+    matrice dephasage(double xi);
 
 
 };

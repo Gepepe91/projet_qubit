@@ -10,11 +10,9 @@ using namespace std;
 
 int main(){
 
-    qubit q1(complexe(1,M_PI) , complexe(1,10)) , q2(complexe(1,-1) , complexe(-1,1));
-
     matrice m;
 
-    m = q1 ^ q2;
+    m.dephasage(M_PI/2);
 
     m.display();
 

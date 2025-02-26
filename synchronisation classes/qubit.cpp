@@ -19,7 +19,10 @@ qubit::qubit(double theta_ , double phi_) : theta(theta_) , phi(phi_){
 
 //Méthodes de synchronisation
 void qubit::synchr_alpha_beta_to_theta_phi(){
-    theta = 2*acos(abs(alpha));
+    if (abs(alpha) >= 1) {
+        theta = 0.;}
+    else{
+        theta = 2*acos(abs(alpha));}
     phi = arg(beta) - arg(alpha);
 }
 void qubit::synchr_theta_phi_to_alpha_beta(){
@@ -50,11 +53,11 @@ double qubit::get_phi() {
 //probabilités de |0> et |1>
 double qubit::get_abs_alpha2() {
     synchr_theta_phi_to_alpha_beta();
-    return alpha.real()*alpha.real() + alpha.imag()*alpha.imag();
+    return norm(alpha);
 }
 double qubit::get_abs_beta2() {
     synchr_theta_phi_to_alpha_beta();
-    return beta.real()*beta.real() + beta.imag()*beta.imag();
+    return norm(beta);
 }
 
 //Setters
@@ -80,13 +83,7 @@ void qubit::set_phi(double phi_){
 
 //méthodes de calculs et modifications
 
-/*
-//Tranformation par une matrice
-void qubit::transform(matrice m){
-    alpha = m.get_element(0,0)*alpha + m.get_element(0,1)*beta;
-    beta = m.get_element(1,0)*alpha + m.get_element(1,1)*beta;
-}
-    */
+
 //Normalisation du qubit
 void qubit::normalize() {
     double constante_norm = std::sqrt(std::norm(alpha) + std::norm(beta));

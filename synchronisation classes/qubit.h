@@ -8,7 +8,7 @@ class matrice;
 
 class qubit {
     
-private:
+protected: //partagé avec la classe fille {produit tens. de q1 et q2}
 
 //Attributs caractérisant notre qubit + fonctions de synchronisation
 
@@ -52,7 +52,6 @@ public:
     void set_phi(double phi_);
 
     //Méthodes de calculs et modifications
-    //void transform(matrice m); //matrice étant une classe matrice faite maison
     void normalize(); //Permet d'éviter l'accumulation d'erreurs numériques sur notre qubit et s'assurer qu'il reste normé
 
     //Méthodes d'affichages
@@ -69,5 +68,7 @@ public:
     //matrice operator^(const qubit& q2);
 
 };
+
+
 
 #endif

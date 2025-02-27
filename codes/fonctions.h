@@ -120,6 +120,8 @@ qubit preparation_etat_plus(qubit q_init, double omega , double omega_0 , double
     alpha[0] = q_init.get_alpha();
     beta[0] = q_init.get_beta();
 
+    int rang=0; // pour obtenir les dernière valeurs de alpha et beta de l'itération
+
 
 
     std::ofstream fichier("preparation_qubit.csv");
@@ -130,7 +132,10 @@ qubit preparation_etat_plus(qubit q_init, double omega , double omega_0 , double
             fichier << t[i] << " " << alpha[i] << " " << beta[i] << " " 
                     << norm(alpha[i]) << " " << norm(beta[i]) << std::endl;
 
-            if (0.5 - 1e-5 <= norm(alpha[i]) && norm(alpha[i]) <= 0.5 + 1e-5) break;
+            if (0.5 - 1e-6 <= norm(alpha[i]) && norm(alpha[i]) <= 0.5 + 1e-6){ //la précision ici est arbitraire
+                rang = i;
+                break;
+            };
 
         /*
             if (0.5 - 1e-4 <= norm(alpha[i]) && norm(alpha[i]) <= 0.5 + 1e-4) {
@@ -171,4 +176,7 @@ qubit preparation_etat_plus(qubit q_init, double omega , double omega_0 , double
     }
 
     fichier.close();
+
+    q_init.set_alpha(alpha[rang]) ; q_init.set_beta(beta[rang]);
+    return q_init;
 }

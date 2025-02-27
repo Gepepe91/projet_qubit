@@ -7,17 +7,21 @@
 class matrice;
 
 class qubit {
+
+private:
+
+double theta , phi; //private car n'ont pas de sens pour la classe fille
+
+void synchr_alpha_beta_to_theta_phi();
+void synchr_theta_phi_to_alpha_beta();
     
 protected: //partagé avec la classe fille {produit tens. de q1 et q2}
 
-//Attributs caractérisant notre qubit + fonctions de synchronisation
+// Attributs caractérisant notre qubit + fonctions de synchronisation
 
     std::complex<double> alpha , beta;  // Amplitudes pour |0> et |1>
 
-    double theta , phi;          // Paramètres theta et phi
 
-    void synchr_alpha_beta_to_theta_phi();
-    void synchr_theta_phi_to_alpha_beta();
 
 public:
 
@@ -56,6 +60,7 @@ public:
 
     //Méthodes d'affichages
     void display();
+    void display_angles();
 
     //Surcharges d'opérateurs
     qubit operator*(const std::complex<double>& scalaire); // Qubit * complexe

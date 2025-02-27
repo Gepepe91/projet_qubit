@@ -58,7 +58,8 @@ int main(){
 
     q_plus = preparation_etat_plus(q  , omega , omega_0 , omega_1 ,  dt ,T_init, T_max , n);
 
-    q_plus.display();
+    cout << q_plus.get_abs_alpha2() << endl;
+    cout << q_plus.get_abs_beta2() << endl;
     
 
     return 0;

@@ -105,6 +105,13 @@ void qubit::display(){
     std::cout << beta << " coefficient complexe de |1>" << std::endl;
     std::cout << std::endl;
 }
+void qubit::display_angles(){
+    synchr_alpha_beta_to_theta_phi();
+    std::cout << std::endl;
+    std::cout << theta << " angle theta" << std::endl;
+    std::cout << phi << " angle phi" << std::endl;
+    std::cout << std::endl;
+}
 
 //Surcharges d'opérateurs
 

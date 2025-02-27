@@ -16,19 +16,21 @@ int main(){
     // définition des grandeurs physiques :
 
     double B_z = 0.01 ; //champ B0 de 10 mT
-    double B_xy = 0.01;
+    double B_xy = 0.001;
 
     double omega_0 = - gamma_e * B_z ; //fréquence de Larmor
     double omega_1 = - gamma_e*B_xy;
 
-    double omega = omega_0; //arbitraire, controlé par l'expérimentateur, résonnance etc
+    //double omega = 2.288e9; //tel que w - w0 = 3*w1 et amplitude varie entre 0.9-1 et 0-0.1
+    double omega = omega_0; //valeur de w à résonance
 
     // grandeurs de la simulation :
 
-    int n = 1000;
-    double T_0 = (2*M_PI)/omega_0;
-    double dt = T_0 / n; //incrément de temps arbitraire comme étant une fraction de la période
-    double T_max = 10*T_0; // arbitraire aussi, temps maximale de la simulation
+    int n = 1000000;
+    double T_1 = (2*M_PI)/omega_1;
+    double T_init = 0. ;
+    double T_max = T_init + 3*T_1; // arbitraire aussi, temps maximale de la simulation
+    double dt = (T_max-T_init) / n; //incrément de temps arbitraire comme étant une fraction de la période
 
     // Hamiltonien de précession de phase
 
@@ -39,13 +41,24 @@ int main(){
 
     // Initialisation de notre qubit , état initial
 
-    qubit q(0,M_PI); // theta et phi
+    qubit q(0,0); // theta et phi
 
     //simulation
 
     simulation_static(q , H_stat_Oz , dt , T_max);
 
-    simulation_dynamic(q  , omega , omega_0 , omega_1 ,  dt , T_max , n);
+    simulation_dynamic(q  , omega , omega_0 , omega_1 ,  dt ,T_init, T_max , n);
+
+    //Maintenant, on veut faire une fonction qui permet de préparer notre qubit dans l'état |+> = (|0> + |1>)/sqrt(2).
+    //En pratique, cette fonction ressemble beaucoup à simulation_dynamic(), sauf que on stoppe l'itération lorsque on
+    //est très proche de norm(alpha) = norm(beta) = 0.5.
+    // !!! preparation_plus() renvoie un qubit, ce n'est pas une fonction void.
+
+    qubit q_plus;
+
+    q_plus = preparation_etat_plus(q  , omega , omega_0 , omega_1 ,  dt ,T_init, T_max , n);
+
+    q_plus.display();
     
 
     return 0;

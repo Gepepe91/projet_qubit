@@ -34,7 +34,7 @@ int main() {
     double omega = - gamma * Bz ;
 
     ofstream outFile("results.csv");
-    outFile << "t,prob_psi0,prob_psi1,x,y,z,theta\n";
+    outFile << "t,prob_psi0,prob_psi1,x,y,z\n";
 
     Evolve::runSimulation(qubit, delta_t, T_total, gamma, Bz, outFile);
 

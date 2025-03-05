@@ -248,9 +248,13 @@ void one_qubit(int N , double xi) {
         //information de Fisher pour le paramètre de déphasage exact
         fisher_exact = (A*A*sin(xi)*sin(xi))/ (1 - A*A*cos(xi)*cos(xi)) ;
 
-        // écriture dans le fichier
-        fichier << p  << "," << N0 << "," << estimation_dephasage << "," << exact << "," << ECM << "," << exact_ECM << "," << fisher << "," << fisher_exact << std::endl;
+        if (!std::isnan(estimation_dephasage)){
+            //écriture dans le fichier en excluant les nan
+            fichier << p  << "," << N0 << "," << estimation_dephasage << "," << exact << "," << ECM << "," << exact_ECM << "," << fisher << "," << fisher_exact << std::endl;
+        }
     }
+
+
     fichier.close() ;
     
 }

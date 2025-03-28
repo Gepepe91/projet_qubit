@@ -1,142 +1,95 @@
-#include<iostream>
-#include<cmath>
 #include "qubit.h"
-//#include"matrice.h"
+#include <complex>
+#include <iostream>
+#include"matrice.h"
 
-using complex = std::complex<double>;
+using complexe = std::complex<double>;
 
-//Constructeurs
+// Constructors
+qubit::qubit() : theta(0), phi(0) {}
 
-//par défaut
-qubit::qubit() : theta(0) , phi(0){} //Par défaut, les angles sont nuls, pôle nord dans le plan 0x
-//Par alpha et beta
-qubit::qubit(complex alpha_ , complex beta_) : alpha(alpha_) , beta(beta_){
-    synchr_alpha_beta_to_theta_phi();
-}
-//Par theta et phi
-qubit::qubit(double theta_ , double phi_) : theta(theta_) , phi(phi_){
-    synchr_theta_phi_to_alpha_beta();
+qubit::qubit(complexe alpha_, complexe beta_) : alpha(alpha_), beta(beta_) {
+    synchronize_alpha_beta_to_theta_phi();
 }
 
-//Méthodes de synchronisation
-void qubit::synchr_alpha_beta_to_theta_phi(){
-    if (abs(alpha) >= 1 - 1e-12) {
-        theta = 0.;
-        phi = 0;}
-    else if (abs(beta) >= 1 - 1e-12){
+qubit::qubit(double theta_, double phi_) : theta(theta_), phi(phi_) {
+    synchronize_theta_phi_to_alpha_beta();
+}
+
+// Synchronization between alpha/beta and theta/phi
+void qubit::synchronize_alpha_beta_to_theta_phi() {
+    if (std::abs(alpha) >= 1 - 1e-12) {
+        theta = 0.0;
+        phi = 0.0;
+    } else if (std::abs(beta) >= 1 - 1e-12) {
         theta = M_PI;
-        phi = 0;
+        phi = 0.0;
+    } else {
+        theta = 2 * std::acos(std::abs(alpha));
     }
-    else{
-        theta = 2*acos(abs(alpha));}
-    phi = arg(beta) - arg(alpha);
-}
-void qubit::synchr_theta_phi_to_alpha_beta(){
-    alpha = cos(theta/2);
-    beta = exp(complex(0,phi)) * sin(theta/2);
+    phi = std::arg(beta) - std::arg(alpha);
 }
 
-//Getters
-
-//alpha et beta
-complex qubit::get_alpha() {
-    synchr_theta_phi_to_alpha_beta();
-    return alpha;
-}
-complex qubit::get_beta() {
-    synchr_theta_phi_to_alpha_beta();
-    return beta;
-}
-//theta et phi
-double qubit::get_theta() {
-    synchr_alpha_beta_to_theta_phi();
-    return theta;
-}
-double qubit::get_phi() {
-    synchr_alpha_beta_to_theta_phi();
-    return phi;
-}
-//probabilités de |0> et |1>
-double qubit::get_abs_alpha2() {
-    synchr_theta_phi_to_alpha_beta();
-    return norm(alpha);
-}
-double qubit::get_abs_beta2() {
-    synchr_theta_phi_to_alpha_beta();
-    return norm(beta);
+void qubit::synchronize_theta_phi_to_alpha_beta() {
+    alpha = std::cos(theta / 2);
+    beta = std::exp(complexe(0, phi)) * std::sin(theta / 2);
 }
 
-//Setters
+// Getters
+complexe qubit::get_alpha() const { return alpha; }
+complexe qubit::get_beta() const { return beta; }
+double qubit::get_theta() const { return theta; }
+double qubit::get_phi() const { return phi; }
+double qubit::get_abs_alpha2() const { return std::norm(alpha); }
+double qubit::get_abs_beta2() const { return std::norm(beta); }
 
-//alpha et beta
-void qubit::set_alpha(complex alpha_){
-    alpha = alpha_;
-    synchr_alpha_beta_to_theta_phi();
-}
-void qubit::set_beta(complex beta_){
-    beta = beta_;
-    synchr_alpha_beta_to_theta_phi();
-}
-//theta et phi
-void qubit::set_theta(double theta_){
-    theta = theta_;
-    synchr_theta_phi_to_alpha_beta();
-}
-void qubit::set_phi(double phi_){
-    phi = phi_;
-    synchr_theta_phi_to_alpha_beta();
-}
+// Setters
+void qubit::set_alpha(complexe alpha_) { alpha = alpha_; synchronize_alpha_beta_to_theta_phi(); }
+void qubit::set_beta(complexe beta_) { beta = beta_; synchronize_alpha_beta_to_theta_phi(); }
+void qubit::set_theta(double theta_) { theta = theta_; synchronize_theta_phi_to_alpha_beta(); }
+void qubit::set_phi(double phi_) { phi = phi_; synchronize_theta_phi_to_alpha_beta(); }
 
-//méthodes de calculs et modifications
-
-
-//Normalisation du qubit
+// Normalization
 void qubit::normalize() {
-    double constante_norm = std::sqrt(std::norm(alpha) + std::norm(beta));
-    alpha /= constante_norm;
-    beta /= constante_norm;
+    double norm_const = std::sqrt(std::norm(alpha) + std::norm(beta));
+    alpha /= norm_const;
+    beta /= norm_const;
 }
 
-//Méthodes visuelles
-void qubit::display(){
-    synchr_theta_phi_to_alpha_beta();
+// Display method
+void qubit::display() const {
     std::cout << std::endl;
-    std::cout << alpha << " coefficient complexe de |0>" << std::endl ;
-    std::cout << beta << " coefficient complexe de |1>" << std::endl;
-    std::cout << std::endl;
-}
-void qubit::display_angles(){
-    synchr_alpha_beta_to_theta_phi();
-    std::cout << std::endl;
-    std::cout << theta << " angle theta" << std::endl;
-    std::cout << phi << " angle phi" << std::endl;
+    std::cout << alpha << " coefficient of |0>" << std::endl;
+    std::cout << beta << " coefficient of |1>" << std::endl;
     std::cout << std::endl;
 }
 
-//Surcharges d'opérateurs
+void qubit::display_angles() {
+    std::cout << "Theta: " << theta << " | Phi: " << phi << std::endl;
+}
 
-// Surcharge de l'opérateur * pour multiplier par un scalaire complexe
-qubit qubit::operator*(const complex& scalaire) {
-    // Multiplie chaque composant par le scalaire
+// Operator overloads
+qubit qubit::operator*(const complexe& scalaire) const {
     return qubit(alpha * scalaire, beta * scalaire);
 }
-// Surcharge de l'opérateur * pour multiplier par un scalaire complexe
-qubit qubit::operator*(const double& scalaire){
-    return qubit(alpha * scalaire , beta * scalaire);
-}
-//Surcharge de l'opérateur + entre qubit
-qubit qubit::operator+(const qubit& r){
-    return qubit(alpha + r.alpha , beta + r.beta);
+
+qubit qubit::operator*(const double& scalaire) const{
+    return qubit(alpha * scalaire, beta * scalaire);
 }
 
-complex qubit::operator|(const qubit& q2){
-    return conj(alpha) * q2.alpha + conj(beta) * q2.beta;
-}
-matrice qubit::operator&(const qubit& q2){
-    return matrice (alpha * conj(q2.alpha) , alpha * conj(q2.beta) , beta * conj(q2.alpha) , beta * conj(q2.beta));
+qubit qubit::operator+(const qubit& r) const{
+    return qubit(alpha + r.alpha, beta + r.beta);
 }
 
-//matrice qubit::operator^(const qubit& q2){
-//    return matrice (alpha * q2.alpha , alpha*q2.beta , beta*q2.alpha , beta*q2.beta);
-//}
-// ! A redéfinir, il faut obtenir une matrice 4*1
+std::complex<double> qubit::operator|(const qubit_system& q2) const {
+    const qubit* q = dynamic_cast<const qubit*>(&q2);
+    if (!q) throw std::runtime_error("Invalid qubit_system conversion to qubit.");
+    return std::conj(alpha) * q->alpha + std::conj(beta) * q->beta;
+}
+
+matrice qubit::operator&(const qubit_system& q2) const {
+    const qubit* q = dynamic_cast<const qubit*>(&q2);
+    if (!q) throw std::runtime_error("Invalid qubit_system conversion to qubit.");
+    return matrice(alpha * std::conj(q->alpha), alpha * std::conj(q->beta),
+                   beta * std::conj(q->alpha), beta * std::conj(q->beta));
+}

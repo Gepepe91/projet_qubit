@@ -1,62 +1,49 @@
 #ifndef MATRICE_H
 #define MATRICE_H
 
-/*
-Je m'inspire de la classe Matrice de Florian, mais en essayant de généraliser un peu
+#include <vector>
+#include <iostream>
+#include <stdexcept>
+#include <complex>
+//#include "qubit.h" Ca foutait la merdre
+class qubit; //déclaration anticipée
 
-Intêret de créer un objet matrice :
-- permet de définir toutes les matrices qui nous intéresse : Pauli, Hadamard
-Une façon originale : méthodes .init_as_Hadamard() , .init_as_Pauli_x, .init_as_Pauli_y
-- méthode privée qui normalise
-- dans la classe qubit, il faut ajouter une méthode qubit.transformation(matrice m) qui transforme le qubit selon la matrice
---> en somme, la classe matrice est assez simple, elle n'est pas directement responsable des transformations
-Il est donc possible de s'inspirer très fortement du cours
+using complexe = std::complex<double>;
 
-D'ailleurs, c'est plus une classe d'isomorphisme qu'une classe de matrice : que des matrices 2x2 !
-*/
+class matrice {
+private:
+    std::vector<std::vector<complexe>> mat; // Matrix represented as a vector of vectors
+    size_t lignes; // Number of rows
+    size_t colonnes; // Number of columns
 
-#include<complex>
-#include<vector>
-#include<iostream>
-#include<cmath>
-#include"qubit.h"
+public:
+    // Constructors
+    matrice(); // Default constructor, identity matrix 2x2
+    matrice(size_t lignes, size_t colonnes);
+    matrice(complexe a, complexe b, complexe c, complexe d); // 2x2 matrix with 4 elements
+    
+    // Modifiers
+    void set_as(complexe a, complexe b, complexe c, complexe d); // Modifies matrix with 4 values
+    void set_as_Pauli_x(); // Pauli X matrix
+    void set_as_Pauli_y(); // Pauli Y matrix
+    void set_as_Pauli_z(); // Pauli Z matrix
+    void setElement(size_t i, size_t j, double valeur); // Modify matrix element
+    
+    // Getters
+    complexe get_element(unsigned int ligne, unsigned int colonne) const; // Access matrix element
+    
+    // Display
+    void display() const; // Display matrix
 
-class qubit;
+    // Matrix operations
+    matrice operator*(const complexe z) const; // Matrix multiplication with a scalar
+    matrice operator*(const matrice& m) const; // Matrix multiplication
+    qubit operator*(const qubit& q) const; // Matrix multiplication with a qubit
 
-using complexe = std::complex<double>; //ça améliore grandement la lisibilité
+    matrice operator+(const complexe z) const; // Matrix addition with a scalar
+    matrice operator+(const matrice& n) const; // Matrix addition with another matrix
 
-class matrice{
-
-    protected:
-
-    std::vector<std::vector<complexe>> mat; // la matrice de Pauli y a des coef complexes
-
-    public:
-
-    matrice(); // le constructeur par défaut doit donner l'identité 2x2;
-    matrice(complexe a , complexe c , complexe b , complexe d);
-    // a b
-    // c d
-
-    void display();
-    complexe get_element(unsigned int ligne , unsigned int colonne) const;
-
-    void set_as(complexe a , complexe b , complexe c , complexe d);
-
-    void set_as_Pauli_x();
-    void set_as_Pauli_y();
-    void set_as_Pauli_z();
-
-    //Surcharge opérateurs
-
-    matrice operator*(const complexe z); // matrice * complexe
-    qubit operator*( qubit q);     // matrice * qubit
-    matrice operator+(const complexe z); // matrice + complexe
-    matrice operator+(const matrice n); //  matrice + matrice
-
-    matrice dephasage(double xi);
-
-
+    matrice dephasage(double xi); // Dephasing matrix
 };
 
 #endif

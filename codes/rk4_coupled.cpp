@@ -21,6 +21,9 @@ void rk4_couple(std::vector<complexe>& alpha, std::vector<complexe>& beta , std:
 
 int main(){
 
+    int n=1000;
+    double dt=0.001;
+
 
     qubit q(2*M_PI/3,0); // qubit préparé dans (|0> + |1>)/sqrt(2)
 

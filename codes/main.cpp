@@ -1,9 +1,14 @@
 #include<iostream>
 #include<cmath>
-#include"matrice.h"
 #include<complex>
-#include <random>
+#include<random>
+
+#include"matrice.h"
+#include"qubit_system.h"
 #include"qubit.h"
+#include"tens_2q.h"
+#include"tens_Nq.h"
+
 #include"constants.h"
 #include"fonctions.h"
 
@@ -14,7 +19,7 @@ using namespace std;
 
 int main(){
 
-/*    // définition des grandeurs physiques :
+    // définition des grandeurs physiques :
 
     double B_z = 0.01 ; //champ B0 de 10 mT
     double B_xy = 0.001;
@@ -61,12 +66,6 @@ int main(){
 
     cout << q_plus.get_abs_alpha2() << endl;
     cout << q_plus.get_abs_beta2() << endl;
-
-    */
-
-    one_qubit(200 , M_PI/4.);
-
-    two_qubits(100 ,  M_PI/4.);
     
 
     return 0;

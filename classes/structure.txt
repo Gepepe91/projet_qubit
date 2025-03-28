@@ -1,0 +1,7 @@
+qubit_system (classe abstraite)
+│
+├── qubit (1 qubit individuel)
+│
+├── tens_2q (système de 2 qubits)
+│
+└── tens_Nq (système de N qubits)

@@ -41,7 +41,7 @@ qubit compute_derivative(qubit q, matrice H) {
 void simulation_static(qubit q , matrice H , double dt , double T_max){
     //Ouverture du fichier
     std::ofstream fichier;
-    fichier.open("data.csv");
+    fichier.open("simulation_statique.csv");
 
     //boucle for, simulation à proprement parlé
     fichier << "Time theta phi abs_alpha2 abs_beta2" << std::endl;
@@ -85,7 +85,7 @@ void simulation_dynamic(qubit q_init, double omega , double omega_0 , double ome
 
 
 
-    std::ofstream fichier("dynamic_data.csv");
+    std::ofstream fichier("simulation_dynamique.csv");
     fichier << "Time alpha beta abs_alpha2 abs_beta2" << std::endl;
 
     for (int i = 0; i < n - 1; i++) {
@@ -648,7 +648,7 @@ qubit preparation_bruit_correction(qubit q_init, double omega, double omega_0, d
     int rang;
     bool condition_prepa = false;
 
-    std::ofstream fichier("oscillating_magnetic_field_with_noise_and_correction.csv");
+    std::ofstream fichier("preparation_qubit_champ_dynamique_bruit_correction.csv");
 
     // Vérifier si le fichier est ouvert
     if (!fichier.is_open()) {
@@ -698,7 +698,7 @@ qubit preparation_bruit_correction(qubit q_init, double omega, double omega_0, d
         qubit_correction.normalize();
 
         // Vérifier si |alpha|^2 est proche de 0.5 après n_min étapes et stopper les oscillations du champ
-        if ((0.5 - 5e-3 <= norm(alpha_corr) && norm(alpha_corr) <= 0.5 + 5e-3) && i > n_min && !condition_prepa) {
+        if ((0.5 - 1e-2 <= norm(alpha_corr) && norm(alpha_corr) <= 0.5 + 1e-2) && i > n_min && !condition_prepa) {
             rang = i;
             std::cout << "rang " << rang << std::endl << "temps :" << t << std::endl;
             omega_1 = 0;

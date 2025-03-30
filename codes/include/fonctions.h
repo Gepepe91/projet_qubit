@@ -56,13 +56,10 @@ void simulation_static(qubit q , matrice H , double dt , double T_max){
 
 
 
-
-
 /*
 2
 Evolution d'un qubit seul non bruité dans un champ dynamique
 */
-
 
 
 // Définition des équations différentielles couplées
@@ -114,9 +111,6 @@ void simulation_dynamic(qubit q_init, double omega , double omega_0 , double ome
 
     fichier.close();
 }
-
-
-
 
 
 
@@ -274,7 +268,6 @@ void two_qubits(int N , double xi) {
 
 
 
-
 // include des librairies d'aléatoire
 static std::random_device rd;
 static std::mt19937 gen(rd());
@@ -335,7 +328,7 @@ void appliquer_bruit_aleatoire_ab(qubit& q, double niveau_bruit, double* bruital
 void simulation_avec_bruit(qubit q, matrice H, double dt, double T_init, double T_max, int n, double noise_level) {
     // Ouverture du fichier
     std::ofstream fichier;
-    fichier.open("data_with_noise.csv");
+    fichier.open("simulation_bruit_qubit.csv");
     double t = T_init;
     double bruittheta = 0.0, bruitphi = 0.0;
     // Vérifiez si le fichier est ouvert correctement
@@ -372,7 +365,7 @@ void simulation_oscillating_magnetic_field_with_noise_and_correction( qubit q_in
     double bruit_phi = 0.0;
     double ancien_bruit_theta = 0.0, ancien_bruit_phi = 0.0; // Bruit de l'itération précédente
 
-    std::ofstream fichier("oscillating_magnetic_field_with_noise_and_correction.csv");
+    std::ofstream fichier("champ_magnetique_oscillant_avec_bruit_et_correction.csv");
 
     // Check if the file is open
     if (!fichier.is_open()) {
@@ -440,7 +433,7 @@ void simulation_oscillating_magnetic_field_with_noise_and_correction( qubit q_in
 void simulation_multiple_noise_levels(qubit q_init, double omega, double omega_0, double omega_1,
     double dt, double T_init, double T_max, int n) {
 std::vector<double> noise_levels = {0.01, 0.02, 0.03, 0.04}; // Niveaux de bruit à tester
-std::ofstream fichier("simulation_results.csv");
+std::ofstream fichier("simulation_niveaux_bruit_multiple.csv");
 
 if (!fichier.is_open()) {
     std::cerr << "Erreur: Impossible d'ouvrir le fichier simulation_results.csv" << std::endl;
@@ -506,14 +499,14 @@ fichier.close();
 void simulation_multiple_noise_levels_repete(qubit q_init, double omega, double omega_0, double omega_1,
     double dt, double T_init, double T_max, int n, int repetitions) {
     std::vector<double> noise_levels = {0.01, 0.02, 0.03, 0.04};
-    std::ofstream fichier("simulation_results_repeated.csv");
+    std::ofstream fichier("simulation_repetee_niveaux_bruit.csv.csv");
 
     if (!fichier.is_open()) {
         std::cerr << "Erreur: Impossible d'ouvrir le fichier simulation_results.csv" << std::endl;
         return;
     }
 
-    fichier << "Noise Level,Repetition,Time,abs_alpha_bruit,abs_beta_bruit,abs_alpha_corrige,abs_beta_corrige" << std::endl;
+    fichier << "Noise level,Repetition,Time,abs_alpha_bruit,abs_beta_bruit,abs_alpha_corrige,abs_beta_corrige" << std::endl;
 
     for (double noise_level : noise_levels) {
         for (int rep = 0; rep < repetitions; ++rep) {
@@ -572,9 +565,6 @@ void simulation_multiple_noise_levels_repete(qubit q_init, double omega, double 
 /*
 Preparation des qubits dans l'état |+>
 */
-
-
-
 
 
 // fonction de préparation d'un qubit dans l'état souhaité
@@ -642,10 +632,9 @@ qubit preparation_etat_plus(qubit q_init, double omega , double omega_0 , double
     return q_init;
 }
 
-
-
 // Fonction de simulation avec champ magnétique oscillant et bruit, avec correction et arrêt du champ
 qubit preparation_bruit_correction(qubit q_init, double omega, double omega_0, double omega_1, double dt, double T_init, double T_max, int n, double noise_level) {
+
 
     // Qubit bruité (expérience principale)
     qubit qubit_bruit = q_init;
@@ -729,4 +718,143 @@ qubit preparation_bruit_correction(qubit q_init, double omega, double omega_0, d
 
     // Retourner le qubit préparé
     return qubit_correction;
+}
+
+
+/*
+Estimation information de Fisher
+*/
+
+void fisher_1qubit(){
+    // random entre 0 et 1
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count(); //génération random en fonction de l'heure
+    std::mt19937 gen(seed); //Générateur Mersenne Twister 
+    std::uniform_real_distribution<double> dis(0.0, 1.0); // Distribution uniforme entre 0 et 1
+    
+    int N; // nb d'itération de la mesure
+    std::cout << "Entrez le nombre de qubits préparés et mesurés N :"; std::cin >> N;
+    double xi = M_PI/4 ; //valeur exacte du déphasage
+    
+    std::ofstream fichier ;
+    fichier.open("estimation_single.csv") ; // fichier qui récupère les données pour 
+    
+    fichier << "p N0 estimation exact ECM exact_ECM fisher fisher_exact" << std::endl;
+    
+    
+    //variation proba. de 0 à 1 EXCLUS pour éviter les divergences avec arccos
+    // p caractérise à quel point notre bruit peut affcter le qubit déphasé
+    for (double p=1e-4 ; p < 0.99 ; p = p + 0.005) {
+        int N0 = 0 ; //compteur nb de projection sur état |0>
+    
+        //proba de mesurer la valeur propre associée à psi_0 l'état préparé, ici "|+>"
+        double proba_0 = 1./2 * (1 + (1 - p) * std::cos(xi)) ;
+    
+        for (int i=0 ; i < N ; i++) {
+            if (dis(gen) <= proba_0) { //si notre nb random est inférieur à la proba --> mesure valeur propre de |+> et on ajoute +1 à N0
+                N0 += 1 ;
+            }
+        }
+    
+        double A = 1-p ;
+        double estimation, exact, ECM, exact_ECM, fisher, fisher_exact = 0.0 ;
+        estimation = std::acos((2*N0-N)/(N*A)) ; //estimation paramètre de déphasage
+        exact = xi ; //déphasage xi exact donnée initialement, connue
+    
+        //Ecart quadratique moyen avec l'estimation du déphasage xi
+        ECM = (1 - A*A*cos(estimation)*cos(estimation))/(A*A*sin(estimation)*sin(estimation)*N) ;
+    
+        //ecart quadratique moyen avec la valeur exacte du déphasage
+        exact_ECM = (1 - A*A*cos(xi)*cos(xi))/(A*A*sin(xi)*sin(xi)*N) ;
+    
+        //info de fisher avec l'estimation du déphasage xi
+        fisher = (A*A*sin(estimation)*sin(estimation))/ (1 - A*A*cos(estimation)*cos(estimation)) ;
+    
+        //info de fisher avec la valeur exacte du déphasage xi 
+        fisher_exact = (A*A*sin(xi)*sin(xi))/ (1 - A*A*cos(xi)* cos(xi)) ;
+    
+        // Condition pour ne pas considérer les valeurs NaN 
+            if (!std::isnan(estimation)) {
+               fichier << p  << "," << N0 << "," << estimation << "," << exact << "," << ECM << "," << exact_ECM << "," << fisher << "," << fisher_exact << std::endl;
+        }
+    }
+    fichier.close();
+}
+
+void fisher_2qubit_intrique(){
+
+// random entre 0 et 1
+unsigned seed = std::chrono::system_clock::now().time_since_epoch().count(); //génération random en fonction de l'heure
+std::mt19937 gen(seed); //Générateur Mersenne Twister 
+std::uniform_real_distribution<double> dis(0.0, 1.0); // Distribution uniforme entre 0 et 1
+
+int N = 200 ;
+double xi = M_PI/4 ;//valeur exacte déphasage
+
+std::ofstream fichier ;
+fichier.open("intrique.csv") ;
+
+// 2 qubit intriqués --> espace de Hilbert de dimension 2^2=4
+// Plus possible de discriminer simplement
+
+fichier << "p N0 N1 N2 N3 estimation xi_exact ECM exact_ECM fisher fisher_exact" << std::endl;
+
+for (double p=1e-4 ; p < 0.99 ; p = p + 0.005) { //boucle de p presque 0 à 1, arccos...
+    //4 compteur pour les 4 états sur lesquels on projette
+    int N0 = 0 ;
+    int N1 = 0 ;
+    int N2 = 0 ;
+    int N3 = 0 ;
+    //proba pour les 4 mesures, |++> , |+-> , |-+> , |-->
+    double proba_0 = 1./2 * (1 - p/2 + (1-p) * std::cos (xi)) ;
+    double proba_1 = p/4 ;
+    double proba_2 = 1./2 * (1 - p/2 - (1-p) * std::cos (xi)) ;
+    double proba_3 = p/4 ;
+    // somme des probas, doit être 1
+    double somme = proba_0 + proba_1 + proba_2 + proba_3 ;
+
+    double estimation, ECM, ECM_exact, fisher, fisher_exact = 0. ;
+
+
+    //problème, les probas des états se superposent, changement d'origine des probas, pas de discrim claire
+
+    // 1 : mesure de P0
+    // décalage de l'origine de P1 , 0 à P1 --> P0 à P0 + P1
+    // etc avec P2 , P3 ...
+    // Cela permet de discriminer les projections
+    //normalement reste borné par 1
+
+    for (int i=0 ; i < N ; i++) {
+        double alea = dis(gen) ;
+        if (alea <= proba_0) {
+            N0 += 1 ;
+        }
+        else if ((alea <= proba_1 + proba_0) && (proba_0 <= alea)) {
+            N1 += 1 ;
+        }
+        else if ((alea <= somme - proba_3) && (proba_1 + proba_0 <= alea)) {
+            N2 += 1 ;
+        }
+        else if ((alea <= somme) && (somme - proba_3 <= alea)) {
+            N3 += 1 ;
+        }
+    }
+
+    double A = 1-p ;
+    double B = 1 - p/2 ;
+
+    estimation = acos((B*(N0-N2)) / (A*(N0 + N2))) ; //estimation du param xi
+    //ecart quadra moyen du param estimé
+    ECM = (B*B - A*A*cos(estimation)*cos(estimation)) / (B*A*A*sin(estimation)*sin(estimation)*N) ;
+    //ecart quadra moyen du param exact
+    ECM_exact = (B*B - A*A*cos(xi)*cos(xi)) / (B*A*A*sin(xi)*sin(xi)*N) ;
+    // information de Fisher du param estimé
+    fisher = (B*A*A*sin(estimation)*sin(estimation)) / (B*B - A*A*cos(estimation)*cos(estimation)) ;
+    // info de Fisher du param exact
+    fisher_exact = (B*A*A*sin(xi)*sin(xi)) / (B*B - A*A*cos(xi)*cos(xi)) ;
+
+    if (!std::isnan(estimation)) {
+        fichier << p << " " << N0 << " " << N1 << " " << N2 << " " << N3 << " " << estimation << " " << xi << " " << ECM << " " << ECM_exact << " " << fisher << " " << fisher_exact << std::endl ;
+    }
+}
+fichier.close() ;
 }
